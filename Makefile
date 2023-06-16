@@ -1,3 +1,7 @@
+SHELL := bash
+PATH  := bin:${PATH}
+PWD   := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
 .PHONY: migrate migrate_down migrate_up migrate_version docker prod docker_delve local swaggo test
 
 # ==============================================================================
@@ -18,51 +22,36 @@ migrate_down:
 
 # ==============================================================================
 # Docker compose commands
-
-develop:
-	echo "Starting docker environment"
-	docker-compose -f docker-compose.dev.yml up --build
-	./compose.sh
-
-docker_delve:
-	echo "Starting docker debug environment"
-	docker-compose -f docker-compose.delve.yml up --build
-
-prod:
-	echo "Starting docker prod environment"
-	docker-compose -f docker-compose.prod.yml up --build
-	./compose.sh
-
-local:
+up:
 	echo "Starting local environment"
-	docker-compose -f docker-compose.local.yml up --build
-	./compose.sh
+	echo "Starting container"
+	docker compose -f docker-compose.yml build && docker compose -f docker-compose.yml up -d
+down:
+	docker stop $(FILES)
+	docker rm $(FILES)
 
-
+install:
+	./compose.local.sh
 # ==============================================================================
-# Tools commands
-
-run-linter:
-	echo "Starting linters"
-	golangci-lint run ./...
-
-swaggo:
-	echo "Starting swagger generating"
-	swag init -g **/**/*.go
-
 
 # ==============================================================================
 # Main
 
 run:
-	go run ./cmd/api/main.go
-
-build:
-	go build ./cmd/api/main.go
+	./vendor/bin/sail up
 
 test:
-	go test -cover ./...
+	./vendor/bin/sail test
 
+ifeq (require,$(firstword $(MAKECMDGOALS)))
+  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  # ...and turn them into do-nothing targets
+  $(eval $(RUN_ARGS):;@:)
+endif
+
+.PHONY: run
+require:
+	./vendor/bin/sail compose require $(RUN_ARGS)
 
 # ==============================================================================
 # Modules support
@@ -91,9 +80,6 @@ deps-cleancache:
 
 FILES := $(shell docker ps -aq)
 
-down-local:
-	docker stop $(FILES)
-	docker rm $(FILES)
 
 clean:
 	docker system prune -f

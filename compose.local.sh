@@ -15,34 +15,38 @@ else
 fi
 
 # Build and run the image
-docker compose build && docker compose up -d
+# docker compose -f docker-compose.local.yml build && docker compose -f docker-compose.local.yml up -d
 
-# Install composer deps
-docker compose exec app composer install --no-dev --optimize-autoloader --no-interaction
+# Install deps
+docker compose -f docker-compose.yml exec app composer install
 
 # Remove package lock
-# docker compose exec app rm -rf package-lock.json
+# docker compose -f docker-compose.yml exec app rm -rf package-lock.json
 
 # Install node deps
-# docker compose exec app npm install
+docker compose -f docker-compose.yml exec app npm install
 
 # Build the frontend like vue, react
-# docker compose exec app npm run build
+docker compose -f docker-compose.yml exec app npm run build
 
 # Copy the production environment
-docker compose exec app cp .env.production .env
+docker compose -f docker-compose.yml exec app cp .env.example .env
 
 # Give correct permission to the storage folder
-docker compose exec app chmod o+w ./storage/ -R
+docker compose -f docker-compose.yml exec app chmod o+w ./storage/ -R
+
+# Key
+docker compose -f docker-compose.yml exec app php artisan key:generate
 
 # Migrate the database
-docker compose exec app php artisan migrate --seed --force --no-interaction
+# Dont needed
 
 # Cache the config
-docker compose exec app php artisan config:cache
+docker compose -f docker-compose.yml exec app php artisan config:cache
 
 # Cache the route
-docker compose exec app php artisan route:cache
+docker compose -f docker-compose.yml exec app php artisan route:cache
 
 # Cache the view
-docker compose exec app php artisan view:cache
+docker compose -f docker-compose.yml exec app php artisan view:cache
+
