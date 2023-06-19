@@ -14,7 +14,9 @@ permissions:
 env:
   PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
   REGION: us-central1
-  REPO_NAME: cloud-run-source-deploy/idez/idez-app
+  REPO_NAME: cloud-run-source-deploy
+  IMAGE_NAME: idez/idez-app
+  IMAGE_SHA: ${{ secrets.GCLOUD_SHA }}
 
 jobs:
   tests:
@@ -25,7 +27,7 @@ jobs:
       matrix:
         php: [8.2]
 
-    name: PHP ${{ matrix.php }}
+    name: Build - PHP ${{ matrix.php }}
 
     steps:
       - name: Checkout code
@@ -67,7 +69,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           export IMAGE_TAG=${{ secrets.GCLOUD_SHA }}
-          export IMAGE_PATH=${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}@sha256:${IMAGE_TAG}
+          export IMAGE_PATH=us-central1-docker.pkg.dev/idez-app/cloud-run-source-deploy/idez/idez-app@sha256:a899d0fa7f95487124dd8a2b1230807e91bd6335c23a21057fa8f77a088d3dbb
           docker build -t $IMAGE_PATH .
           docker push $IMAGE_PATH
 
