@@ -46,8 +46,7 @@ jobs:
         env:
           SERVICE_COUNTY: brasil_api_service
         run: vendor/bin/phpunit --testsuite=Internal
-
-      steps:
+        
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v0.4.0'
