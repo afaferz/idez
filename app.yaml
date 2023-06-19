@@ -23,5 +23,4 @@ env_variables:
     APP_ENV: production
     APP_KEY: ${APP_KEY}
     APP_NAME: "Idez - App"
-
     LOG_LEVEL: debug
