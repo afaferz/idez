@@ -16,9 +16,7 @@ env:
   IMAGE_SHA: ${{ secrets.GCLOUD_SHA }}
   REGION: us-central1
   REPO_NAME: cloud-run-source-deploy
-  IMAGE_NAME: idez/idez-app
-  # IMAGE_PATH: ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}@${IMAGE_SHA}
-  IMAGE_PATH: us-central1-docker.pkg.dev/idez-app/cloud-run-source-deploy/idez/idez-app@a899d0fa7f95487124dd8a2b1230807e91bd6335c23a21057fa8f77a088d3dbb
+  IMAGE_NAME: gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/${{ secrets.GCLOUD_PROJECT_ID }}
 
 jobs:
   tests:
@@ -64,19 +62,11 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
 
-      - name: Configure Docker to use the gcloud command-line tool as a credential helper
-        run: |
-          gcloud auth configure-docker ${REGION}-docker.pkg.dev
+      - name: Configure Docker
+        run: gcloud auth configure-docker --quiet
 
-      - name: Build and push Docker image
-        run: |
-          docker build -t ${IMAGE_PATH} .
-          docker push ${IMAGE_PATH}
-
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy your-service \
-            --image=${IMAGE_PATH} \
-            --platform=managed \
-            --region=${REGION} \
-            --allow-unauthenticated
+      - name: Build Docker image
+        run: docker build . -t $IMAGE_NAME
+      
+     -  name: Deploy Docker image
+        run: gcloud run deploy ${{ secrets.GCP_PROJECT_ID }} --image $IMAGE_NAME --region us-central1 --platform managed
