@@ -18,35 +18,32 @@ fi
 # docker compose -f docker-compose.local.yml build && docker compose -f docker-compose.local.yml up -d
 
 # Install deps
-docker compose -f docker-compose.yml exec app composer install
+docker compose exec app composer install
 
 # Remove package lock
-# docker compose -f docker-compose.yml exec app rm -rf package-lock.json
+# docker compose exec app rm -rf package-lock.json
 
 # Install node deps
-docker compose -f docker-compose.yml exec app npm install
+docker compose exec app npm install
 
 # Build the frontend like vue, react
-docker compose -f docker-compose.yml exec app npm run build
-
-# Copy the production environment
-docker compose -f docker-compose.yml exec app cp .env.example .env
+docker compose exec app npm run build
 
 # Give correct permission to the storage folder
-docker compose -f docker-compose.yml exec app chmod o+w ./storage/ -R
+docker compose exec app chmod o+w ./storage/ -R
 
 # Key
-docker compose -f docker-compose.yml exec app php artisan key:generate
+docker compose exec app php artisan key:generate
 
 # Migrate the database
 # Dont needed
 
 # Cache the config
-docker compose -f docker-compose.yml exec app php artisan config:cache
+# docker compose exec app php artisan config:cache
 
 # Cache the route
-docker compose -f docker-compose.yml exec app php artisan route:cache
+# docker compose exec app php artisan route:cache
 
 # Cache the view
-docker compose -f docker-compose.yml exec app php artisan view:cache
+# docker compose exec app php artisan view:cache
 
