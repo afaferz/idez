@@ -27,4 +27,3 @@ jobs:
       run: php artisan test
       env:
         SERVICECOUNTY: brasil_api_service
-      run: vendor/bin/phpunit --testsuite=internal
