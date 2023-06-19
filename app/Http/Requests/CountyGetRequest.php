@@ -2,9 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Exceptions\BadRequestException;
 use App\Types\Enums\StateCodeEnum;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CountyGetRequest extends FormRequest
 {
@@ -37,18 +40,26 @@ class CountyGetRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'state_code' => ['Invalid state code', 'Allowed values ' . $this->getAllowedStates()],
+            'state_code' => ['Invalid State Code', 'Allowed values ' . $this->getAllowedStates()],
             'page_number' => 'Max page_number value is 100',
             'page_size' => 'Max page_size value is 1000',
         ];
     }
     public function all($keys = null)
     {
-        $lowedParams = array_map("strtolower",$this->route()->parameters());
+        $lowedParams = array_map("strtolower", $this->route()->parameters());
         return array_replace_recursive(
             parent::all(),
             $lowedParams
         );
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        $response = response()->json([
+            'error' => $validator->errors(),
+        ], 422);
+
+        throw new HttpResponseException($response);
     }
     private function getAllowedStates()
     {
