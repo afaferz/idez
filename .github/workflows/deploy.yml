@@ -47,11 +47,13 @@ jobs:
           SERVICE_COUNTY: brasil_api_service
         run: vendor/bin/phpunit --testsuite=Internal
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.4.0
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
         with:
-          version: '358.0.0'
-          service_account_key: ${{ secrets.GCLOUD_AUTH_KEY }}
+          credentials_json: '${{ secrets.GCLOUD_AUTH_KEY }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
 
       - name: Configure Docker
         run: |
@@ -71,9 +73,3 @@ jobs:
             --platform=managed \
             --region=us-central1 \
             --allow-unauthenticated
-      - name: Trigger Google Cloud Build
-        env:
-          GCLOUD_TRIGGER_URL: ${{ secrets.GCLOUD_TRIGGER_URL }}
-        run: |
-          curl -X POST -H "Content-Type: application/json" -H "X-Goog-Resource-Name: $GCLOUD_TRIGGER_URL" -H "Authorization: Bearer $(gcloud auth print-access-token)" https://cloudbuild.googleapis.com/v1/projects/idez-app/locations/global/triggers/69bf9495-9589-4066-923c-e5fed19607d2
-
