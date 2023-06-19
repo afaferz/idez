@@ -11,15 +11,9 @@ on:
 permissions:
   contents: read
 
-env:
-  PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
-  IMAGE_SHA: ${{ secrets.GCLOUD_SHA }}
-  REGION: us-central1
-  REPO_NAME: cloud-run-source-deploy
-  IMAGE_NAME: gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/${{ secrets.GCLOUD_PROJECT_ID }}
-
 jobs:
   tests:
+    
     runs-on: ubuntu-latest
 
     strategy:
@@ -27,6 +21,9 @@ jobs:
       matrix:
         php: [8.2]
 
+    env:
+      IMAGE_NAME: gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/${{ secrets.GCLOUD_PROJECT_ID }}
+    
     name: Build - PHP ${{ matrix.php }}
 
     steps:
