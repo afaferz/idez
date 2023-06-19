@@ -10,8 +10,6 @@ on:
 
 permissions:
   contents: read
-env:
-  IMAGE_NAME: gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/${{ secrets.GCLOUD_PROJECT_ID }}
 
 jobs:
     tests:
@@ -21,8 +19,6 @@ jobs:
       matrix:
         php: [8.1, 8.2]
 
-    
-    
     name: Build - PHP ${{ matrix.php }}
 
     steps:
@@ -62,7 +58,7 @@ jobs:
         run: gcloud auth configure-docker --quiet
 
       - name: Build Docker image
-        run: docker build . -t $IMAGE_NAME
+        run: docker build . -t gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/${{ secrets.GCLOUD_PROJECT_ID }}
       
      -  name: Deploy Docker image
-        run: gcloud run deploy ${{ secrets.GCP_PROJECT_ID }} --image $IMAGE_NAME --region us-central1 --platform managed
+        run: gcloud run deploy ${{ secrets.GCP_PROJECT_ID }} --image gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/${{ secrets.GCLOUD_PROJECT_ID }} --region us-central1 --platform managed
