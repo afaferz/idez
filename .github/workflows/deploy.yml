@@ -48,12 +48,10 @@ jobs:
         run: vendor/bin/phpunit --testsuite=Internal
 
       - name: Authenticate with Google Cloud
-        uses: 'google-github-actions/setup-gcloud@v1'
+        uses: google-github-actions/setup-gcloud@v0.4.0
         with:
-          credentials_json: '${{ secrets.GCLOUD_AUTH_KEY }}'
-      - name: Use gcloud CLI
-        run: 'gcloud info'
+          version: '358.0.0'
+          service_account_key: ${{ secrets.GCLOUD_AUTH_KEY }}
 
-      - name: Run Google Cloud Build
-        run: |
-          gcloud builds submit --config ci/cloudbuild.yaml .
+      - name: Deploy to App Engine
+        run: gcloud app deploy app.yaml --project=${{ secrets.GCLOUD_PROJECT_ID }} --quiet
