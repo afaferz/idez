@@ -46,3 +46,13 @@ jobs:
         env:
           SERVICE_COUNTY: brasil_api_service
         run: vendor/bin/phpunit --testsuite=Internal
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          version: '358.0.0'
+          service_account_key: ${{ secrets.GCLOUD_AUTH_KEY }}
+
+      - name: Run Google Cloud Build
+        run: |
+          gcloud builds submit --config ci/cloudbuild.yaml .
