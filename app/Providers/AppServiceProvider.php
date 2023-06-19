@@ -22,15 +22,11 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(BrasilApiService::class, function (): BrasilApiService {
-            $httpClient = new Http();
-
-            return new BrasilApiService($httpClient);
+            return new BrasilApiService(new Http);
         });
 
         $this->app->bind(IbgeService::class, function (): IbgeService {
-            $httpClient = new Http();
-
-            return new IbgeService($httpClient);
+            return new IbgeService(new Http);
         });
     }
 
