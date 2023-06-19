@@ -1,88 +1,56 @@
 SHELL := bash
 PATH  := bin:${PATH}
 PWD   := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-
-.PHONY: migrate migrate_down migrate_up migrate_version docker prod docker_delve local swaggo test
-
-# ==============================================================================
-# Go migrate postgresql
-
-force:
-	migrate -database postgres://postgres:postgres@localhost:5432/auth_db?sslmode=disable -path migrations force 1
-
-version:
-	migrate -database postgres://postgres:postgres@localhost:5432/auth_db?sslmode=disable -path migrations version
-
-migrate_up:
-	migrate -database postgres://postgres:postgres@localhost:5432/auth_db?sslmode=disable -path migrations up 1
-
-migrate_down:
-	migrate -database postgres://postgres:postgres@localhost:5432/auth_db?sslmode=disable -path migrations down 1
-
+PROJECT_NAME := idez
 
 # ==============================================================================
 # Docker compose commands
 up:
-	echo "Starting local environment"
 	echo "Starting container"
-	docker compose -f docker-compose.yml build && docker compose -f docker-compose.yml up -d
+	docker compose build --no-cache && docker compose up --force-recreate -d
+key:
+	docker compose exec app php artisan key:generate
+attach:
+	docker exec -it api_app /bin/bash
 down:
-	docker stop $(FILES)
-	docker rm $(FILES)
-
-install:
-	./compose.local.sh
+	docker compose down
 # ==============================================================================
 
 # ==============================================================================
 # Main
+phpunit: ## Runs PhpUnit tests
+	./vendor/bin/phpunit -c phpunit.xml --coverage-html reports/coverage --coverage-clover reports/clover.xml --log-junit reports/junit.xml
+# run:
+# 	./vendor/bin/sail up
+# ifeq (require,$(firstword $(MAKECMDGOALS)))
+#   RUN_ARGS_REQUIRE := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+#   $(eval $(RUN_ARGS_REQUIRE):;@:)
+# endif
 
-run:
-	./vendor/bin/sail up
+# .PHONY: require
+# require:
+# 	./vendor/bin/sail compose require $(RUN_ARGS_REQUIRE)
 
-test:
-	./vendor/bin/sail test
+# ifeq (sail,$(firstword $(MAKECMDGOALS)))
+#   RUN_ARGS_SAIL := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+#   $(eval $(RUN_ARGS_SAIL):;@:)
+# endif
 
-ifeq (require,$(firstword $(MAKECMDGOALS)))
-  RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-  # ...and turn them into do-nothing targets
-  $(eval $(RUN_ARGS):;@:)
-endif
-
-.PHONY: run
-require:
-	./vendor/bin/sail compose require $(RUN_ARGS)
-
-# ==============================================================================
-# Modules support
-
-deps-reset:
-	git checkout -- go.mod
-	go mod tidy
-	go mod vendor
-
-tidy:
-	go mod tidy
-	go mod vendor
-
-deps-upgrade:
-	# go get $(go list -f '{{if not (or .Main .Indirect)}}{{.Path}}{{end}}' -m all)
-	go get -u -t -d -v ./...
-	go mod tidy
-	go mod vendor
-
-deps-cleancache:
-	go clean -modcache
-
+# .PHONY: sail
+# sail:
+# 	./vendor/bin/sail $(RUN_ARGS_SAIL)
 
 # ==============================================================================
 # Docker support
 
 FILES := $(shell docker ps -aq)
 
-
+.PHONY: clean
 clean:
-	docker system prune -f
-
+	docker ps -a | awk '/$(PROJECT_NAME)/ { print $$1 }' | xargs docker rm -f
+clean-im:
+	docker images -a | awk '/$(PROJECT_NAME)/ { print $$3 }' | xargs docker rmi -f
+prune:
+	docker system prune -a
 logs-local:
 	docker logs -f $(FILES)
