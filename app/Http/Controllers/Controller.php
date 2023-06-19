@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
+
     protected function sendJson(array $data): JsonResponse
     {
         return response()->json($data);
