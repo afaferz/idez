@@ -3,8 +3,6 @@ name: IdezApp
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   schedule:
     - cron: '0 0 * * *'
 
@@ -12,53 +10,53 @@ permissions:
   contents: read
 
 jobs:
-  tests:
+  release:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        php: [8.1, 8.2]
+        php: [8.2]
 
     name: Build - PHP ${{ matrix.php }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
-          coverage: none
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+        coverage: none
 
-      - name: Install (Composer)
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --ignore-platform-req=ext-swoole
+    - name: Install (Composer)
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --ignore-platform-req=ext-swoole
 
-      - name: Copy environment file
-        run: cp .env.example .env
+    - name: Copy environment file
+      run: cp .env.example .env
 
-      - name: Generate app key
-        run: php artisan key:generate
+    - name: Generate app key
+      run: php artisan key:generate
 
-      - name: Tests
-        env:
-          SERVICE_COUNTY: brasil_api_service
-        run: vendor/bin/phpunit --testsuite=Internal
-        
-      - name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v0.4.0'
-        with:
-          credentials_json: '${{ secrets.GCLOUD_AUTH }}'
-
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
-
-      - name: Configure Docker
-        run: gcloud auth configure-docker --quiet
-
-      - name: Build Docker image
-        run: docker build . -t gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/${{ secrets.GCLOUD_PROJECT_ID }}
+    - name: Tests
+      env:
+        SERVICE_COUNTY: brasil_api_service
+      run: vendor/bin/phpunit --testsuite=Internal
       
-     -  name: Deploy Docker image
-        run: gcloud run deploy ${{ secrets.GCP_PROJECT_ID }} --image gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/${{ secrets.GCLOUD_PROJECT_ID }} --region us-central1 --platform managed
+    - name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v0.4.0'
+      with:
+        credentials_json: '${{ secrets.GCLOUD_AUTH }}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v1'
+
+    - name: Configure Docker
+      run: gcloud auth configure-docker --quiet
+
+    - name: Build Docker image
+      run: docker build . -t gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/${{ secrets.GCLOUD_PROJECT_ID }}
+    
+    - name: Deploy Docker image
+      run: gcloud run deploy ${{ secrets.GCP_PROJECT_ID }} --image gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/${{ secrets.GCLOUD_PROJECT_ID }} --region us-central1 --platform managed
