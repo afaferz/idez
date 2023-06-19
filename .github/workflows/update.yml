@@ -44,5 +44,5 @@ jobs:
 
       - name: Tests
         env:
-          SERVICECOUNTY: brasil_api_service
+          SERVICE_COUNTY: brasil_api_service
         run: vendor/bin/phpunit --testsuite=Internal
