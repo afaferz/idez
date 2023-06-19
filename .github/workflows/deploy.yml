@@ -47,29 +47,32 @@ jobs:
           SERVICE_COUNTY: brasil_api_service
         run: vendor/bin/phpunit --testsuite=Internal
 
-      - name: Authentication on Cloud SDK
-        uses: 'google-github-actions/auth@v1'
+      steps:
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v0.4.0'
         with:
-          credentials_json: '${{ secrets.GCLOUD_AUTH_KEY }}'
+          workload_identity_provider: 'projects/114401279715/locations/global/workloadIdentityPools/idez-app'
+          service_account: 'idez-app@appspot.gserviceaccount.com'
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
 
-      - name: Configure Docker
-        run: |
-          echo ${{ secrets.GCLOUD_AUTH_KEY }} | base64 -d > ${HOME}/gcloud-service-key.json
-          gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-          gcloud auth configure-docker
+      # - name: Configure Docker
+      #   run: |
+      #     echo ${{ secrets.GCLOUD_AUTH_KEY }} | base64 -d > ${HOME}/gcloud-service-key.json
+      #     gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+      #     gcloud auth configure-docker
 
-      - name: Build and push Docker Image
-        run: |
-          docker build -t gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/idez-app .
-          docker push gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/idez-app
+      # - name: Build and push Docker Image
+      #   run: |
+      #     docker build -t gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/idez-app .
+      #     docker push gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/idez-app
 
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy idez-app \
-            --image=gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/idez-app \
-            --platform=managed \
-            --region=us-central1 \
-            --allow-unauthenticated
+      # - name: Deploy to Cloud Run
+      #   run: |
+      #     gcloud run deploy idez-app \
+      #       --image=gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/idez-app \
+      #       --platform=managed \
+      #       --region=us-central1 \
+      #       --allow-unauthenticated
