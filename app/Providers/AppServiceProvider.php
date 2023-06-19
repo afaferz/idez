@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
+use App\External\Services\Abstractions\CountyServiceAbstract;
+use App\External\Services\Factories\CountyServiceFactory;
 use App\External\Services\BrasilApiService;
-use App\External\Services\CountyService;
-use App\External\Services\IBGEService;
-use Illuminate\Support\Facades\App;
+use App\External\Services\IbgeService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,27 +16,21 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Register service without use factory but using object template
-        $this->app->bind(CountyService::class, function (): CountyService {
-            $envService = env('COUNTY_API');
-            $service = CountyService::AVAILABLES_SERVICES[$envService] ?? null;
-            if (is_null($service)) {
-                throw new \Exception('Provide a valiable API service');
-            }
-
-            return App::get($service);
+        $this->app->bind(CountyServiceAbstract::class, function (): CountyServiceAbstract {
+            $service = env('SERVICE_COUNTY');
+            return CountyServiceFactory::create($service);
         });
 
-        $this->app->bind(BrasilApisService::class, function (): BrasilApiService {
+        $this->app->bind(BrasilApiService::class, function (): BrasilApiService {
             $httpClient = new Http();
 
             return new BrasilApiService($httpClient);
         });
 
-        $this->app->bind(IbgeCountyService::class, function (): IBGEService {
+        $this->app->bind(IbgeService::class, function (): IbgeService {
             $httpClient = new Http();
 
-            return new IBGEService($httpClient);
+            return new IbgeService($httpClient);
         });
     }
 
@@ -45,6 +39,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // \Illuminate\Support\Facades\URL::forceScheme('https');
+        // if($this->app->environment('production')) {
+        // }
     }
 }
