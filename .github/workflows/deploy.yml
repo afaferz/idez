@@ -47,11 +47,10 @@ jobs:
           SERVICE_COUNTY: brasil_api_service
         run: vendor/bin/phpunit --testsuite=Internal
         
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
+      - name: 'Authenticate to Google Cloud'
         uses: `google-github-actions/auth@v0.4.0'
-          with:
-            credentials_json: '${{ secrets.GCLOUD_AUTH }}'
+        with:
+          credentials_json: '${{ secrets.GCLOUD_AUTH }}'
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
