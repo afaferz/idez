@@ -20,6 +20,8 @@ down:
 # Main
 phpunit: ## Runs PhpUnit tests
 	./vendor/bin/phpunit -c phpunit.xml --coverage-html reports/coverage --coverage-clover reports/clover.xml --log-junit reports/junit.xml
+test:
+	php artisan test
 # run:
 # 	./vendor/bin/sail up
 # ifeq (require,$(firstword $(MAKECMDGOALS)))
