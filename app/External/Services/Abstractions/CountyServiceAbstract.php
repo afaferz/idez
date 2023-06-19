@@ -2,17 +2,16 @@
 
 namespace App\External\Services\Abstractions;
 
+use App\Exceptions\BadRequestException;
 use App\External\Services\Interfaces\CountyServiceInterface;
 use Illuminate\Support\Facades\Log;
-use DomainException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 abstract class CountyServiceAbstract implements CountyServiceInterface
 {
-    public function __construct(protected Http $http)
+    public function __construct(protected Http $httpClient)
     {
-        // Constructor
     }
 
     public function getCounty(array $requestParams)
@@ -47,14 +46,13 @@ abstract class CountyServiceAbstract implements CountyServiceInterface
 
     public function handleError(string $message): void
     {
-        throw new DomainException($message);
+        throw new BadRequestException($message);
     }
 
     public function handleLog(string $message): void
     {
         Log::error($message);
     }
-
 
     protected abstract function getCounties(string $state): array;
 }

@@ -3,24 +3,28 @@
 namespace App\External\Services;
 
 use App\External\Services\Abstractions\CountyServiceAbstract;
+use Illuminate\Http\Client\RequestException;
 
 class IbgeService extends CountyServiceAbstract
 {
     public const API_URI = 'https://servicodados.ibge.gov.br/api/v1/';
     public const SEARCH_PATH = 'localidades/estados/%s/municipios';
     // Could not request to IBGE Api because OpenSSL and TLS version is older
-    private const INSECURE_SSL_ERROR = 'Could not request to %s for %s due insecure TLS and SSL version.';
+    private const INSECURE_TLS_SSL_ERROR = 'Could not request due insecure TLS and SSL version.';
 
     protected function getCounties(string $state): array
     {
         $url = self::API_URI . sprintf(self::SEARCH_PATH, $state);
         try {
-            // Disable SSL verify because TLS and OpenSSL from IBGE is old
-            $response = $this->http::withoutVerifying()->withOptions(["verify" => false])->get($url);
-        } catch (\Exception $exception) {
-            $errorMessage = (sprintf(self::INSECURE_SSL_ERROR, self::API_URI, $state, $exception->getMessage()));
-            $this->handleLog($errorMessage);
-            $this->handleError($errorMessage);
+            $url = self::API_URI . sprintf(self::SEARCH_PATH, $state);
+            $response = $this->httpClient::withoutVerifying()->withOptions(["verify" => false])->get($url);
+            $response->throw();
+        } catch (RequestException $e) {
+            $this->handleLog($e->getMessage());
+            $this->handleError($this->genGenericErrorMessage($state));
+        } catch (\Exception $e) {
+            $this->handleLog($e->getMessage());
+            $this->handleError($this->genGenericErrorMessage($state));
         }
         return $this->parseJson($this->decodeJson($response));
     }
@@ -36,5 +40,9 @@ class IbgeService extends CountyServiceAbstract
             ];
         }
         return $parsedResponse;
+    }
+    private function genGenericErrorMessage(string $state)
+    {
+        return sprintf('An Error Ocurred for request %s to %s: %s', self::API_URI, $state, self::INSECURE_TLS_SSL_ERROR);
     }
 }
