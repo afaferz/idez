@@ -18,7 +18,7 @@ env:
   REPO_NAME: cloud-run-source-deploy
   IMAGE_NAME: idez/idez-app
   # IMAGE_PATH: ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${IMAGE_NAME}@${IMAGE_SHA}
-  IMAGE_PATH: us-central1-docker.pkg.dev/idez-app/cloud-run-source-deploy/idez/idez-app@sha256:a899d0fa7f95487124dd8a2b1230807e91bd6335c23a21057fa8f77a088d3dbb
+  IMAGE_PATH: us-central1-docker.pkg.dev/idez-app/cloud-run-source-deploy/idez/idez-app@a899d0fa7f95487124dd8a2b1230807e91bd6335c23a21057fa8f77a088d3dbb
 
 jobs:
   tests:
