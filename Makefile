@@ -8,12 +8,10 @@ PROJECT_NAME := idez
 up:
 	echo "Starting container"
 	docker compose build --no-cache && docker compose up --force-recreate -d
-key:
-	docker compose exec app php artisan key:generate
-attach:
-	docker exec -it api_app /bin/bash
 down:
 	docker compose down
+attach:
+	docker exec -it api_app /bin/bash
 # ==============================================================================
 
 # ==============================================================================

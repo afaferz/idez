@@ -1,66 +1,92 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/b/be/Mapa_do_Brasil_com_a_Bandeira_Nacional.png" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+## **About Project**
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This project is a simple application to find County in Brazil by API and a SPA
+This app provider two ways to find County in Brazil using two services:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Brasil Api
+- IBGE Api
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+>**NOTE** The IBGE Api have the Open SSL and TLS in older version, it impossibility make HTTP requests to this API, unfortunately.
 
-## Learning Laravel
+## **About My Journe**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Im my journe coding and deploying this application I take much experience in backend application more than I can imagine.
+I used for the first time WSL to development and combine it with a full dockerization service in Ubuntu.
+In my coding I never installed nothing but Docker, which slowed my dev experience (without local php and laravel) but permited a full and complete Virtualization from application.
+I like so much develop a simple Api and this challenge enrich a lot my knowledges about another stacks and dev area such Backend, DevOps and SecOps
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## **Technologies**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+This application uses:
 
-## Laravel Sponsors
+- **[Google Cloud SDK](https://cloud.google.com/sdk?hl=pt-br)**
+- **[Google Cloud Cli](https://cloud.google.com/sdk/docs/install?hl=pt-br)**
+- **[Laravel 10](https://laravel.com/)**
+- **[Laravel Sail](https://laravel.com/)** - in optional config (see docker-compose.yml)
+- **[Docker](https://www.docker.com/)**
+- **[PHP 8.2](https://www.php.net/releases/8.2/en.php)**
+- **[Nginx](https://www.nginx.com/)**
+- **[VSCode](https://code.visualstudio.com/)**
+- **[WSL](https://learn.microsoft.com/pt-br/windows/wsl/install)**
+- **[Ubuntu 22.04-LTS](https://ubuntu.com/download)**
+- **[Postman](https://www.postman.com/)**
+- **[Github Actions](https://github.com/features/actions)**
+- **Deployed on Google Cloud**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## **Documentation**
 
-### Premium Partners
+### Setup of containers
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+1 - First, configure the environment:
 
-## Contributing
+```sh
+make env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2 - Second, create the containers:
 
-## Code of Conduct
+```sh
+make up
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+> These steps are only for first time using this project, it will create and install all dependencies for project and setup PHP and NGINX
 
-## Security Vulnerabilities
+Now your application is running in `http://127.0.0.1:8000/`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Test
 
-## License
+> To test you first need to attach on container
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- For attach on container run...
+
+```
+# will attach on container api_app in /var/www workdir
+make attach
+```
+
+- Now you can run twice option of test
+  - PHPUnit
+  - Artisan Test
+
+To Run PHPUnit just run
+
+```
+make phpunit
+```
+
+To Run Artisan just run
+
+```
+make test
+```
+
+- If you want to install something else just run on container
+
+```sh
+compose require $(ARGS)
+```
