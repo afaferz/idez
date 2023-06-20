@@ -11,6 +11,8 @@ This app provider two ways to find County in Brazil using two services:
 - Brasil Api
 - IBGE Api
 
+**TO TEST IN A SPA FOLLOW THIS LINK `https://idez-hx1vnt2ia-afaferz.vercel.app/`**
+
 >**NOTE** The IBGE Api have the Open SSL and TLS in older version, it impossibility make HTTP requests to this API, unfortunately.
 
 ## **About My Journe**
@@ -37,6 +39,7 @@ This application uses:
 - **[Postman](https://www.postman.com/)**
 - **[Github Actions](https://github.com/features/actions)**
 - **Deployed on Google Cloud**
+- **SPA Deployed on Vercel**
 
 ## **Documentation**
 
