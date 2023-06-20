@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: gcr.io/${{ secrets.GCLOUD_PROJECT_ID }}/${{ secrets.GCLOUD_PROJECT_ID }}
+      IMAGE_DIGEST: ${{ secrets.GCLOUD_SHA }}
 
     strategy:
       fail-fast: true
@@ -62,4 +63,4 @@ jobs:
       run: docker build . -t $IMAGE_NAME
     
     - name: Deploy Docker image
-      run: gcloud run deploy ${{ secrets.GCLOUD_PROJECT_ID }} --image $IMAGE_NAME@sha256:b2eced4d12115dd25deac4645ca4758ce6ce518ab37341f029d1caa67f9350cd --region us-central1 --platform managed
+      run: gcloud run deploy ${{ secrets.GCLOUD_PROJECT_ID }} --image $IMAGE_NAME@$IMAGE_DIGEST --region us-central1 --platform managed
