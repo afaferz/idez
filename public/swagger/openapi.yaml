@@ -1,0 +1,37 @@
+openapi: 3.0.0
+info:
+  title: 'County API'
+  version: 1.0.0
+paths:
+  '/api/v1/county/{state_code}':
+    get:
+      tags:
+        - counties
+      summary: 'Returns a list of counties'
+      description: 'Returns a object of county'
+      operationId: f5313d36c421d9262d22266a4315364f
+      parameters:
+        -
+          name: state_code
+          in: path
+          description: 'State Code'
+          required: true
+        -
+          name: page_size
+          in: query
+          description: 'Page Size'
+          required: false
+        -
+          name: page_number
+          in: query
+          description: 'Page Number'
+          required: false
+      responses:
+        '200':
+          description: 'A list of counties with name and ibge_code'
+        '400':
+          description: 'Error from Service API'
+        '422':
+          description: 'Error from County API'
+        '500':
+          description: 'Internal Api Error'
