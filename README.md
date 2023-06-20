@@ -11,7 +11,7 @@ This app provider two ways to find County in Brazil using two services:
 - Brasil Api
 - IBGE Api
 
-**TO TEST IN A SPA FOLLOW THIS LINK -> [APP](https://idez-hx1vnt2ia-afaferz.vercel.app/)**
+**TO TEST IN A SPA FOLLOW THIS LINK -> [APP](https://idez-spa.vercel.app/)**
 
 **TO TEST IN A SWAGGER -> [Swagger](https://idez-app-erjlhxxoya-uc.a.run.app/swagger/index.html)**
 
