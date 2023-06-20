@@ -58,6 +58,8 @@ make up
 
 Now your application is running in `http://127.0.0.1:8000/`
 
+To show router documentation for Open API visit: `127.0.0.1:8000/swagger/index.html`
+
 ### Test
 
 > To test you first need to attach on container
