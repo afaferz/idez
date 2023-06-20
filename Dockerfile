@@ -13,7 +13,7 @@ RUN docker-php-ext-install pdo pdo_mysql bcmath curl opcache
 RUN yes | pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 WORKDIR /var/www
@@ -29,6 +29,10 @@ COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
 
 RUN chmod -R 755 /var/www/storage
 RUN chmod -R 755 /var/www/bootstrap
+RUN chmod -R 755 /var/www/public
+RUN chmod +x /var/www/swagger.sh
 RUN chmod -R 755 ./docker/entrypoint.sh
+RUN chown -R www-data:www-data /usr/share/nginx/html/*
+RUN chmod -R 0755 /usr/share/nginx/html/*
 
 ENTRYPOINT ["sh", "docker/entrypoint.sh" ]

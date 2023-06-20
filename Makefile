@@ -7,7 +7,7 @@ PROJECT_NAME := idez
 # Docker compose commands
 up:
 	echo "Starting container"
-	docker compose build --no-cache && docker compose up --force-recreate -d
+	docker compose build && docker compose up --force-recreate -d
 down:
 	docker compose down
 attach:
@@ -20,6 +20,10 @@ phpunit: ## Runs PhpUnit tests
 	./vendor/bin/phpunit -c phpunit.xml --coverage-html reports/coverage --coverage-clover reports/clover.xml --log-junit reports/junit.xml
 test:
 	php artisan test
+
+.PHONY: docs
+docs:
+	./swagger.sh
 # run:
 # 	./vendor/bin/sail up
 # ifeq (require,$(firstword $(MAKECMDGOALS)))
@@ -42,7 +46,6 @@ test:
 
 # ==============================================================================
 # Docker support
-
 FILES := $(shell docker ps -aq)
 
 .PHONY: clean
